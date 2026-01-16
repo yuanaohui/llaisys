@@ -33,10 +33,10 @@ public:
     const std::vector<size_t> &shape() const;
     const std::vector<ptrdiff_t> &strides() const;
     llaisysDataType_t dtype() const;
-    llaisysDeviceType_t deviceType() const;
-    int deviceId() const;
-    size_t numel() const;
-    size_t elementSize() const;
+    llaisysDeviceType_t deviceType() const; // 设备类型
+    int deviceId() const;                   // 设备ID
+    size_t numel() const;                   // 元素总数
+    size_t elementSize() const;             // 每个元素的大小（字节）
 
     std::string info() const;
     void debug() const;
@@ -50,6 +50,7 @@ public:
 
     // Load data from host memory
     void load(const void *src);
+    // 将数据加载到张量中，如果数据在设备上，则进行相应的内存拷贝；否则直接拷贝
 
     // Challenging features
     tensor_t contiguous() const;
