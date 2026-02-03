@@ -164,7 +164,7 @@ void Tensor::debug() const {
 }
 
 bool Tensor::isContiguous() const {
-    auto expected = 1;
+    size_t expected = 1;
     for (int i = static_cast<int>(this->ndim()) - 1; i >= 0; i--) {
         if (this->strides()[i] != expected) {
             return false;
@@ -218,7 +218,8 @@ tensor_t Tensor::slice(size_t dim, size_t start, size_t end) const {
     CHECK_ARGUMENT(start <= end, "slice: start must be <= end");
     CHECK_ARGUMENT(end <= _meta.shape[dim], "slice: end exceeds dimension size");
 
-    auto new_shape = _meta.shape;
+    //_meta is of type TensorMeta defined in tensor.hpp
+    auto new_shape = _meta.shape; // _meta.shape is std::vector<size_t>
     new_shape[dim] = end - start;
     auto new_strides = _meta.strides; // stride layout stays the same
 

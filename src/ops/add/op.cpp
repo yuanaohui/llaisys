@@ -18,6 +18,7 @@ void add(tensor_t c, tensor_t a, tensor_t b) {
         return cpu::add(c->data(), a->data(), b->data(), c->dtype(), c->numel());
     }
 
+    // set device context
     llaisys::core::context().setDevice(c->deviceType(), c->deviceId());
 
     switch (c->deviceType()) {
