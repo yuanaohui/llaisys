@@ -1,6 +1,7 @@
 #include "op.hpp"
 
 #include "../../utils.hpp"
+#include <cmath>
 
 namespace {
 template <typename T>
