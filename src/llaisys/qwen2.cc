@@ -281,110 +281,111 @@ struct LlaisysQwen2Model {
 
 __C {
 
-struct LlaisysQwen2Model *llaisysQwen2ModelCreate(const LlaisysQwen2Meta *meta,
-                                                  llaisysDeviceType_t device,
-                                                  int *device_ids,
-                                                  int ndevice) {
-    try {
-        CHECK_ARGUMENT(meta != nullptr, "Qwen2: meta must not be null.");
-        CHECK_ARGUMENT(ndevice >= 1, "Qwen2: must have at least one device.");
-        if (device != LLAISYS_DEVICE_CPU) {
-            EXCEPTION_UNSUPPORTED_DEVICE;
-        }
+    struct LlaisysQwen2Model *llaisysQwen2ModelCreate(const LlaisysQwen2Meta *meta,
+                                                      llaisysDeviceType_t device,
+                                                      int *device_ids,
+                                                      int ndevice) {
+        try {
+            CHECK_ARGUMENT(meta != nullptr, "Qwen2: meta must not be null.");
+            CHECK_ARGUMENT(ndevice >= 1, "Qwen2: must have at least one device.");
+            if (device != LLAISYS_DEVICE_CPU) {
+                EXCEPTION_UNSUPPORTED_DEVICE;
+            }
 
-        int device_id = device_ids ? device_ids[0] : 0;
-        auto *model = new LlaisysQwen2Model();
-        model->impl = new Qwen2ModelImpl(*meta, device, device_id);
-        model->impl->init_weights();
-        return model;
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-void llaisysQwen2ModelDestroy(struct LlaisysQwen2Model *model) {
-    try {
-        if (!model) return;
-        model->impl->destroy_weights();
-        delete model->impl;
-        delete model;
-    } catch (...) {
-        return;
-    }
-}
-
-struct LlaisysQwen2Weights *llaisysQwen2ModelWeights(struct LlaisysQwen2Model *model) {
-    try {
-        CHECK_ARGUMENT(model != nullptr, "Qwen2: model must not be null.");
-        return &model->impl->weights;
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-llaisysTensor_t llaisysQwen2ModelGetWeight(struct LlaisysQwen2Model *model, int kind, size_t layer) {
-    try {
-        CHECK_ARGUMENT(model != nullptr, "Qwen2: model must not be null.");
-        auto &w = model->impl->weights;
-        switch (kind) {
-        case LLAISYS_QWEN2_WEIGHT_IN_EMBED:
-            return w.in_embed;
-        case LLAISYS_QWEN2_WEIGHT_OUT_EMBED:
-            return w.out_embed;
-        case LLAISYS_QWEN2_WEIGHT_OUT_NORM:
-            return w.out_norm_w;
-        case LLAISYS_QWEN2_WEIGHT_ATTN_NORM:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.attn_norm_w[layer];
-        case LLAISYS_QWEN2_WEIGHT_ATTN_Q_W:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.attn_q_w[layer];
-        case LLAISYS_QWEN2_WEIGHT_ATTN_Q_B:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.attn_q_b[layer];
-        case LLAISYS_QWEN2_WEIGHT_ATTN_K_W:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.attn_k_w[layer];
-        case LLAISYS_QWEN2_WEIGHT_ATTN_K_B:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.attn_k_b[layer];
-        case LLAISYS_QWEN2_WEIGHT_ATTN_V_W:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.attn_v_w[layer];
-        case LLAISYS_QWEN2_WEIGHT_ATTN_V_B:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.attn_v_b[layer];
-        case LLAISYS_QWEN2_WEIGHT_ATTN_O_W:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.attn_o_w[layer];
-        case LLAISYS_QWEN2_WEIGHT_MLP_NORM:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.mlp_norm_w[layer];
-        case LLAISYS_QWEN2_WEIGHT_MLP_GATE_W:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.mlp_gate_w[layer];
-        case LLAISYS_QWEN2_WEIGHT_MLP_UP_W:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.mlp_up_w[layer];
-        case LLAISYS_QWEN2_WEIGHT_MLP_DOWN_W:
-            CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
-            return w.mlp_down_w[layer];
-        default:
+            int device_id = device_ids ? device_ids[0] : 0;
+            auto *model = new LlaisysQwen2Model();
+            model->impl = new Qwen2ModelImpl(*meta, device, device_id);
+            model->impl->init_weights();
+            return model;
+        } catch (...) {
             return nullptr;
         }
-    } catch (...) {
-        return nullptr;
     }
-}
 
-int64_t llaisysQwen2ModelInfer(struct LlaisysQwen2Model *model, int64_t *token_ids, size_t ntoken) {
-    try {
-        CHECK_ARGUMENT(model != nullptr, "Qwen2: model must not be null.");
-        CHECK_ARGUMENT(token_ids != nullptr, "Qwen2: token_ids must not be null.");
-        return model->impl->infer_next(token_ids, ntoken);
-    } catch (...) {
-        return -1;
+    void llaisysQwen2ModelDestroy(struct LlaisysQwen2Model * model) {
+        try {
+            if (!model) {
+                return;
+            }
+            model->impl->destroy_weights();
+            delete model->impl;
+            delete model;
+        } catch (...) {
+            return;
+        }
     }
-}
 
+    struct LlaisysQwen2Weights *llaisysQwen2ModelWeights(struct LlaisysQwen2Model * model) {
+        try {
+            CHECK_ARGUMENT(model != nullptr, "Qwen2: model must not be null.");
+            return &model->impl->weights;
+        } catch (...) {
+            return nullptr;
+        }
+    }
+
+    llaisysTensor_t llaisysQwen2ModelGetWeight(struct LlaisysQwen2Model * model, int kind, size_t layer) {
+        try {
+            CHECK_ARGUMENT(model != nullptr, "Qwen2: model must not be null.");
+            auto &w = model->impl->weights;
+            switch (kind) {
+            case LLAISYS_QWEN2_WEIGHT_IN_EMBED:
+                return w.in_embed;
+            case LLAISYS_QWEN2_WEIGHT_OUT_EMBED:
+                return w.out_embed;
+            case LLAISYS_QWEN2_WEIGHT_OUT_NORM:
+                return w.out_norm_w;
+            case LLAISYS_QWEN2_WEIGHT_ATTN_NORM:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.attn_norm_w[layer];
+            case LLAISYS_QWEN2_WEIGHT_ATTN_Q_W:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.attn_q_w[layer];
+            case LLAISYS_QWEN2_WEIGHT_ATTN_Q_B:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.attn_q_b[layer];
+            case LLAISYS_QWEN2_WEIGHT_ATTN_K_W:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.attn_k_w[layer];
+            case LLAISYS_QWEN2_WEIGHT_ATTN_K_B:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.attn_k_b[layer];
+            case LLAISYS_QWEN2_WEIGHT_ATTN_V_W:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.attn_v_w[layer];
+            case LLAISYS_QWEN2_WEIGHT_ATTN_V_B:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.attn_v_b[layer];
+            case LLAISYS_QWEN2_WEIGHT_ATTN_O_W:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.attn_o_w[layer];
+            case LLAISYS_QWEN2_WEIGHT_MLP_NORM:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.mlp_norm_w[layer];
+            case LLAISYS_QWEN2_WEIGHT_MLP_GATE_W:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.mlp_gate_w[layer];
+            case LLAISYS_QWEN2_WEIGHT_MLP_UP_W:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.mlp_up_w[layer];
+            case LLAISYS_QWEN2_WEIGHT_MLP_DOWN_W:
+                CHECK_ARGUMENT(layer < model->impl->meta.nlayer, "Qwen2: layer out of range.");
+                return w.mlp_down_w[layer];
+            default:
+                return nullptr;
+            }
+        } catch (...) {
+            return nullptr;
+        }
+    }
+
+    int64_t llaisysQwen2ModelInfer(struct LlaisysQwen2Model * model, int64_t *token_ids, size_t ntoken) {
+        try {
+            CHECK_ARGUMENT(model != nullptr, "Qwen2: model must not be null.");
+            CHECK_ARGUMENT(token_ids != nullptr, "Qwen2: token_ids must not be null.");
+            return model->impl->infer_next(token_ids, ntoken);
+        } catch (...) {
+            return -1;
+        }
+    }
 }
