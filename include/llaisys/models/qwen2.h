@@ -31,11 +31,31 @@ __C {
 
     struct LlaisysQwen2Model;
 
+    enum LlaisysQwen2WeightKind {
+        LLAISYS_QWEN2_WEIGHT_IN_EMBED = 0,
+        LLAISYS_QWEN2_WEIGHT_OUT_EMBED = 1,
+        LLAISYS_QWEN2_WEIGHT_OUT_NORM = 2,
+        LLAISYS_QWEN2_WEIGHT_ATTN_NORM = 3,
+        LLAISYS_QWEN2_WEIGHT_ATTN_Q_W = 4,
+        LLAISYS_QWEN2_WEIGHT_ATTN_Q_B = 5,
+        LLAISYS_QWEN2_WEIGHT_ATTN_K_W = 6,
+        LLAISYS_QWEN2_WEIGHT_ATTN_K_B = 7,
+        LLAISYS_QWEN2_WEIGHT_ATTN_V_W = 8,
+        LLAISYS_QWEN2_WEIGHT_ATTN_V_B = 9,
+        LLAISYS_QWEN2_WEIGHT_ATTN_O_W = 10,
+        LLAISYS_QWEN2_WEIGHT_MLP_NORM = 11,
+        LLAISYS_QWEN2_WEIGHT_MLP_GATE_W = 12,
+        LLAISYS_QWEN2_WEIGHT_MLP_UP_W = 13,
+        LLAISYS_QWEN2_WEIGHT_MLP_DOWN_W = 14
+    };
+
     __export struct LlaisysQwen2Model *llaisysQwen2ModelCreate(const LlaisysQwen2Meta *meta, llaisysDeviceType_t device, int *device_ids, int ndevice);
 
     __export void llaisysQwen2ModelDestroy(struct LlaisysQwen2Model * model);
 
     __export struct LlaisysQwen2Weights *llaisysQwen2ModelWeights(struct LlaisysQwen2Model * model);
+
+    __export llaisysTensor_t llaisysQwen2ModelGetWeight(struct LlaisysQwen2Model * model, int kind, size_t layer);
 
     __export int64_t llaisysQwen2ModelInfer(struct LlaisysQwen2Model * model, int64_t * token_ids, size_t ntoken);
 }
