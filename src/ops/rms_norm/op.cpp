@@ -1,5 +1,7 @@
 #include "op.hpp"
 
+#include <cmath>
+
 #include "../../utils.hpp"
 
 namespace {
