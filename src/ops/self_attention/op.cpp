@@ -1,6 +1,6 @@
 #include "op.hpp"
-#include <limits>
 #include <cmath>
+#include <limits>
 
 namespace {
 template <typename T>
