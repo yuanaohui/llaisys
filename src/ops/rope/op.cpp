@@ -1,4 +1,5 @@
 #include "op.hpp"
+#include <cmath>
 
 namespace {
 template <typename T>
