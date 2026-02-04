@@ -20,8 +20,8 @@ void rope_impl(T *out_ptr, const T *in_ptr, const int64_t *pos_ids,
             for (size_t d = 0; d < half_dim; ++d) {
                 float exponent = (2.0f * static_cast<float>(d)) / static_cast<float>(dim);
                 float angle = static_cast<float>(pos_id) / std::pow(theta, exponent);
-                float cos_angle = std::cosf(angle);
-                float sin_angle = std::sinf(angle);
+                float cos_angle = std::cos(angle);
+                float sin_angle = std::sin(angle);
                 // original values (split half/half)
                 float x1 = llaisys::utils::cast<float>(in_ptr[base + d]);
                 float x2 = llaisys::utils::cast<float>(in_ptr[base + half_dim + d]);
