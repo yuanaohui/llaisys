@@ -164,12 +164,12 @@ void Tensor::debug() const {
 }
 
 bool Tensor::isContiguous() const {
-    size_t expected = 1;
+    ptrdiff_t expected = 1;
     for (int i = static_cast<int>(this->ndim()) - 1; i >= 0; i--) {
         if (this->strides()[i] != expected) {
             return false;
         }
-        expected *= this->shape()[i];
+        expected *= static_cast<ptrdiff_t>(this->shape()[i]);
     }
     return true;
 }
